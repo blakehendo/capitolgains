@@ -1,6 +1,6 @@
-# x402 Congressional Trades
+# Capitol Gains
 
-This repository hosts a single Next.js 16 application that serves both the public-facing marketing site and the versioned `/v1/*` API. The app is designed to sit in front of a Supabase-backed cache for normalized congressional trade data, while an upstream Lambda handles collection and transformation before records are exposed through the API.
+Capitol Gains is a single Next.js 16 application that serves both the public-facing marketing site and the versioned `/v1/*` API. The app is designed to sit in front of a Supabase-backed cache for normalized congressional trade data, while an upstream Lambda handles collection and transformation before records are exposed through the API.
 
 ## Local setup
 

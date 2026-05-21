@@ -10,4 +10,5 @@ if (!connectionString) {
 export const sql = postgres(connectionString, {
   max: 1,
   ssl: "require",
+  prepare: false,
 });

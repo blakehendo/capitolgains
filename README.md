@@ -2,6 +2,8 @@
 
 Capitol Gains is a single Next.js 16 application that serves both the public-facing marketing site and the versioned `/v1/*` API. The app is designed to sit in front of a Supabase-backed cache for normalized congressional trade data, while an upstream Lambda handles collection and transformation before records are exposed through the API.
 
+V1 intentionally scopes the cache/API to two Senate members only: Richard Blumenthal (D-CT) and Ron Wyden (D-OR). Both are Democrats because the current FMP-backed demo endpoint is Senate-only and this scope keeps the first paid-data path small enough to verify end to end.
+
 ## Local setup
 
 ```bash

@@ -11,26 +11,26 @@ insert into public.members (
 )
 values
   (
-    'richard blumenthal',
-    'Richard Blumenthal',
-    'Richard',
-    'Blumenthal',
+    'gary peters',
+    'Gary Peters',
+    'Gary',
+    'Peters',
     'senate',
-    'Richard Blumenthal',
+    'Gary Peters',
     'D',
-    'CT',
-    'B001277'
+    'MI',
+    'P000595'
   ),
   (
-    'ron wyden',
-    'Ron Wyden',
-    'Ron',
-    'Wyden',
+    'john fetterman',
+    'John Fetterman',
+    'John',
+    'Fetterman',
     'senate',
-    'Ron Wyden',
+    'John Fetterman',
     'D',
-    'OR',
-    'W000779'
+    'PA',
+    'F000479'
   )
 on conflict (normalized_name) do update
 set

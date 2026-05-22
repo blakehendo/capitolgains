@@ -2,7 +2,7 @@
 
 BLA-12 defines the Capitol Gains V1 cache schema before any DDL is written. The schema is a normalized superset of the Financial Modeling Prep `senate-latest` response captured in `fixtures/fmp-senate-latest.json`.
 
-V1 only supports two senators: Richard Blumenthal and Ron Wyden. FMP does not provide a stable member id, so the cache joins FMP rows to seeded members by normalized name. That is intentionally narrow and explicit for V1.
+V1 only supports two senators: Gary Peters and John Fetterman. FMP does not provide a stable member id, so the cache joins FMP rows to seeded members by normalized name. That is intentionally narrow and explicit for V1.
 
 ## Tables
 
@@ -11,7 +11,7 @@ V1 only supports two senators: Richard Blumenthal and Ron Wyden. FMP does not pr
 | Column | Type | Constraints | Notes |
 | --- | --- | --- | --- |
 | `id` | `uuid` | Primary key, default generated UUID | Internal stable id. |
-| `normalized_name` | `text` | Required, unique | FMP join key, for example `richard blumenthal`. |
+| `normalized_name` | `text` | Required, unique | FMP join key, for example `gary peters`. |
 | `display_name` | `text` | Required | Human-readable name. |
 | `first_name` | `text` | Required | Seeded first name. |
 | `last_name` | `text` | Required | Seeded last name. |
@@ -77,8 +77,8 @@ Seeded V1 aliases:
 
 | Member | Accepted normalized names |
 | --- | --- |
-| Richard Blumenthal | `richard blumenthal` |
-| Ron Wyden | `ron wyden`, `ronald wyden` |
+| Gary Peters | `gary peters` |
+| John Fetterman | `john fetterman` |
 
 Rows that do not match a seeded V1 member are ignored by the member-specific cache import rather than inserted with an unknown member.
 

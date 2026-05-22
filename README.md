@@ -38,6 +38,14 @@ npx tsx --conditions react-server --env-file=.env.local scripts/verify-epic3-cac
 
 The script normalizes the committed FMP fixture, upserts in-scope V1 trades for Gary Peters and John Fetterman, verifies idempotency/date filtering/freshness, and reconfirms anon-key RLS denial.
 
+Run the Epic 4 local integration check with:
+
+```bash
+npx tsx --conditions react-server --env-file=.env.local scripts/verify-epic4-local.mjs
+```
+
+This check uses the committed FMP fixture and a mocked FMP fetcher for client/adapter and cache-aside orchestration paths: cold miss, warm hit, date filtering, and upstream failure.
+
 Refresh the live cache manually with:
 
 ```bash

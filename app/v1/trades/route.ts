@@ -24,12 +24,15 @@ const toMemberResponse = (
   bioguide_id: member.bioguideId,
 });
 
+const toDateOnlyString = (value: Date | string) =>
+  value instanceof Date ? value.toISOString().slice(0, 10) : value.slice(0, 10);
+
 const toTradeResponse = (trade: Transaction): V1TradesResponse["trades"][number] => ({
   id: trade.id,
   member_id: trade.memberId,
   symbol: trade.symbol,
-  transaction_date: trade.transactionDate,
-  disclosure_date: trade.disclosureDate,
+  transaction_date: toDateOnlyString(trade.transactionDate),
+  disclosure_date: toDateOnlyString(trade.disclosureDate),
   owner: trade.owner,
   asset_description: trade.assetDescription,
   asset_type: trade.assetType,

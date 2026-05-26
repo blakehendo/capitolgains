@@ -53,3 +53,4 @@ npx tsx --conditions react-server --env-file=.env.local scripts/refresh-cache.mj
 ```
 
 The refresh script scans the first two FMP `senate-latest` pages, upserts in-scope rows for both V1 senators, marks each member fresh for 24 hours, and prints a JSON summary of pages fetched, FMP calls spent, and rows upserted.
+If FMP restricts page 1 on the current API plan, the script logs the restricted page and continues only when page 0 already contains rows for both V1 senators.

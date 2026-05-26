@@ -2,7 +2,9 @@ import { x402Client, x402HTTPClient } from "@x402/core/client";
 import { ExactEvmScheme } from "@x402/evm/exact/client";
 import { privateKeyToAccount } from "viem/accounts";
 
-const endpoint = process.env.X402_SMOKE_URL ?? "https://capitolgains.xyz/v1/ping";
+const endpoint =
+  process.env.X402_SMOKE_URL ??
+  "https://capitolgains.xyz/v1/trades?member=John%20Fetterman";
 const privateKey =
   process.env.X402_CLIENT_PRIVATE_KEY ??
   process.env.BASE_SEPOLIA_RECEIVING_WALLET_PRIVATE_KEY;

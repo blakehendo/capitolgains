@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    name: Lint and build
+    runs-on: ubuntu-latest
+
+    env:
+      NEXT_PUBLIC_SITE_URL: https://capitolgains.xyz
+      SUPABASE_URL: https://example.supabase.co
+      SUPABASE_ANON_KEY: placeholder-anon-key
+      SUPABASE_SERVICE_ROLE_KEY: placeholder-service-role-key
+      SUPABASE_DB_POOLER_URL: postgresql://postgres.example:placeholder@localhost:6543/postgres
+      BASE_SEPOLIA_RECEIVING_WALLET_ADDRESS: "0x0000000000000000000000000000000000000001"
+      FMP_API_KEY: placeholder-fmp-key
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+
+      - name: Enable pnpm
+        run: corepack enable pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Build
+        run: pnpm build

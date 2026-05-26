@@ -1,6 +1,6 @@
-# Epic 3 Cache Schema Spec
+# Cache Schema Spec
 
-BLA-12 defines the Capitol Gains V1 cache schema before any DDL is written. The schema is a normalized superset of the Financial Modeling Prep `senate-latest` response captured in `fixtures/fmp-senate-latest.json`.
+This document describes the Capitol Gains V1 cache schema. The schema is a normalized superset of the Financial Modeling Prep `senate-latest` response captured in `fixtures/fmp-senate-latest.json`.
 
 V1 only supports two senators: Gary Peters and John Fetterman. FMP does not provide a stable member id, so the cache joins FMP rows to seeded members by normalized name. That is intentionally narrow and explicit for V1.
 
@@ -118,9 +118,9 @@ If FMP later returns distinct same-day same-symbol trades for the same member wi
 | Whole FMP row | `transactions.raw_json` | Store original row as JSONB. |
 | Fetch timestamp | `transactions.fetched_at` | Use provider fetch time, not an FMP field. |
 
-## Indexes For BLA-13
+## Indexes
 
-The migration ticket should create these indexes:
+The cache schema uses these indexes:
 
 ```sql
 create unique index members_normalized_name_key on members (normalized_name);

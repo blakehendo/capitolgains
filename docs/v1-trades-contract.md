@@ -76,7 +76,7 @@ Field notes:
 | Field | Notes |
 | --- | --- |
 | `member` | Seeded V1 member metadata. |
-| `trades[]` | Public projection of Epic 3 `Transaction`; `raw_json` is intentionally not exposed. |
+| `trades[]` | Public projection of normalized transaction rows; `raw_json` is intentionally not exposed. |
 | `amount_raw` | Original congressional disclosure amount bucket. |
 | `amount_range_low` / `amount_range_high` | Parsed integer dollar bounds. `amount_range_high` is `null` for open-ended buckets. |
 | `metadata.count` | Number of returned trades after date filtering. |
@@ -123,4 +123,4 @@ All errors return JSON:
 
 `/v1/trades` is x402-gated. Validation occurs inside the paid route handler, so a malformed paid request can still settle and then return `400`. Clients should validate locally before paying.
 
-`/v1/ping` remains a cheap protocol probe; `/v1/trades` is the real paid data endpoint.
+`/api/health` remains the free liveness check. `/v1/trades` is the only V1 paid data endpoint.

@@ -89,7 +89,7 @@ export default function DocsPage() {
         </Section>
 
         <Section
-          description="The response exposes normalized Epic 3 transaction fields. raw_json is intentionally not public."
+          description="The response exposes normalized transaction fields. raw_json is intentionally not public."
           eyebrow="Response"
           title="Stable JSON shape"
         >

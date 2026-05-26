@@ -1,8 +1,28 @@
 # Capitol Gains
 
-Capitol Gains is a Next.js 16 App Router project that hosts a public marketing site, API docs, x402 discovery files, and the paid `/v1/trades` API. The V1 data path is FMP `senate-latest` upstream data normalized into a Supabase cache-aside layer, then served through an x402-gated JSON endpoint on Base Sepolia.
+[Live demo](https://capitolgains.xyz) · [API docs](https://capitolgains.xyz/docs) · [x402 discovery](https://capitolgains.xyz/.well-known/x402.json)
 
-V1 intentionally scopes the cache/API to two Senate members only: Gary Peters (D-MI) and John Fetterman (D-PA). The scope matches the committed FMP fixture and the current paid endpoint verification data.
+![CI](https://github.com/blakehendo/capitolgains/actions/workflows/ci.yml/badge.svg)
+
+Capitol Gains is a portfolio V1 of an agent-payable congressional trade data API. It packages public U.S. Senate trade disclosures behind a narrow paid JSON endpoint, using x402 for per-call payment, Supabase for cache-backed reads, and Financial Modeling Prep as the upstream data source.
+
+The product goal is deliberately small: prove that an AI agent or developer can discover a paid data resource, satisfy an HTTP 402 payment requirement, and receive a stable API response without account setup, subscriptions, or API keys.
+
+## Product Scope
+
+V1 supports one paid endpoint:
+
+```http
+GET https://capitolgains.xyz/v1/trades
+```
+
+Supported query parameters:
+
+- `member` - required exact name. V1 supports `Gary Peters` and `John Fetterman`.
+- `from` - optional inclusive `YYYY-MM-DD` transaction date lower bound.
+- `to` - optional inclusive `YYYY-MM-DD` transaction date upper bound.
+
+The endpoint costs `$0.05` USDC per successful call on Base Sepolia testnet. Requests without payment receive `402 Payment Required`; paid retries receive normalized JSON data from the cache/API layer.
 
 ## Architecture
 
@@ -10,30 +30,61 @@ V1 intentionally scopes the cache/API to two Senate members only: Gary Peters (D
 flowchart LR
   A[Client or AI agent] --> B[x402 paywall]
   B --> C[GET /v1/trades]
-  C --> D[Cache-aside orchestrator]
-  D -->|fresh cache hit| E[(Supabase)]
-  D -->|stale or cold cache| F[FMP senate-latest]
+  C --> D[Next.js route handler]
+  D --> E[Cache-aside service]
+  E -->|fresh cache hit| F[(Supabase Postgres)]
+  E -->|cold or stale cache| G[FMP senate-latest]
+  G --> E
+  E --> F
   F --> D
-  D --> E
-  E --> C
-  C --> G[Stable JSON response]
+  D --> H[Stable JSON response]
 ```
 
-The marketing and discovery routes are free. The proxy matcher only covers `/v1/*`, and the current paid production resource is `GET https://capitolgains.xyz/v1/trades`.
+Public marketing, docs, health, and discovery routes are served by the same Next.js app. The x402 proxy only protects `/v1/*`; public pages and discovery files remain free so developers and agents can understand the product before paying.
 
-## Local setup
+## Product Decisions
+
+- **Narrow V1 dataset:** two senators instead of a broad but unreliable member search surface. This keeps testing, cache freshness, and response contracts easy to verify.
+- **Payment at the protocol layer:** x402 removes subscription and API-key setup from the buyer flow. The API can be consumed by agents that understand HTTP 402 payment requirements.
+- **Cache-aside data model:** Supabase stores normalized member and transaction rows so the paid endpoint can return a stable contract even though upstream FMP fields may change.
+- **Explicit public contract:** `/docs`, `/.well-known/x402.json`, and `/llms.txt` make the endpoint understandable to both humans and agents.
+- **Testnet launch:** Base Sepolia is used intentionally for a portfolio/demo release. This validates the payment flow without treating the product as a live financial service.
+
+## Public Routes
+
+- `/` - marketing landing page.
+- `/docs` - API reference and sample response.
+- `/pricing` - pay-per-call pricing and disclaimers.
+- `/api/health` - free liveness check.
+- `/.well-known/x402.json` - machine-readable x402 service descriptor.
+- `/llms.txt` - agent-readable usage notes.
+
+## Repository Structure
+
+- `app/` - Next.js App Router pages and API routes.
+- `components/site/` - presentation components for the marketing/docs site.
+- `lib/trades/` - V1 response contract, validation, and trade service.
+- `lib/db/` - typed Supabase/Postgres data access.
+- `lib/fmp/` - FMP upstream client and normalization.
+- `lib/x402/` - x402 discovery descriptor generation and validation.
+- `supabase/migrations/` - database schema and RLS migrations.
+- `fixtures/` - committed sample upstream and API response data.
+- `scripts/` - local verification, cache refresh, and x402 client scripts.
+- `docs/` - product/API contract notes for the V1 demo.
+
+## Local Development
 
 ```bash
-npm install
+pnpm install
 cp .env.example .env.local
-npm run dev
+pnpm dev
 ```
 
 The development server runs at [http://localhost:3000](http://localhost:3000).
 
-## Environment variables
+## Environment Variables
 
-Document required variables in `.env.example` and keep machine-specific secrets in `.env.local`, which is ignored by git. Mirror the server-side variables in Vercel project settings.
+Use `.env.example` as the template and keep real values in `.env.local` or Vercel environment variables. `.env.local` is ignored by git.
 
 Required for the deployed API:
 
@@ -54,70 +105,37 @@ X402_TRADES_URL=
 X402_TRADES_INVALID_URL=
 ```
 
-## Public routes
+## Verification
 
-- `/` - marketing landing page.
-- `/docs` - API reference and static sample response.
-- `/pricing` - x402 pay-per-call pricing and disclaimers.
-- `/api/health` - free liveness check.
-- `/.well-known/x402.json` - machine-readable x402 service descriptor.
-- `/llms.txt` - concise agent instructions.
-
-## Paid API
-
-```http
-GET https://capitolgains.xyz/v1/trades?member=John%20Fetterman&from=2026-04-01&to=2026-04-30
-```
-
-V1 requires exact `member` names:
-
-- `Gary Peters`
-- `John Fetterman`
-
-The endpoint costs `$0.05` USDC per call on Base Sepolia through x402. A request without payment returns `402`; after payment, the same request returns the stable JSON contract documented in `/docs`.
-
-## Cache verification
-
-Run the Epic 3 cache integration check with:
+Run the standard checks:
 
 ```bash
-npx tsx --conditions react-server --env-file=.env.local scripts/verify-epic3-cache.mjs
+pnpm lint
+pnpm build
 ```
 
-Run the Epic 4 local integration check with:
-
-```bash
-npx tsx --conditions react-server --env-file=.env.local scripts/verify-epic4-local.mjs
-```
-
-Refresh the live cache manually with:
+Refresh the cache manually:
 
 ```bash
 npx tsx --conditions react-server --env-file=.env.local scripts/refresh-cache.mjs
 ```
 
-The refresh script scans the first two FMP `senate-latest` pages, upserts in-scope rows for both V1 senators, marks each member fresh for 24 hours, and prints a JSON summary of pages fetched, FMP calls spent, and rows upserted. If FMP restricts page 1 on the current API plan, the script logs the restricted page and continues only when page 0 already contains rows for both V1 senators.
-
-## x402 test client
-
-Run the standalone TypeScript client against the deployed paid endpoint:
+Run the standalone x402 client against the deployed paid endpoint:
 
 ```bash
 npx tsx --conditions react-server --env-file=.env.local scripts/x402-trades-client.ts
 ```
 
-The client performs:
+The client verifies the core paid API loop:
 
-- unpaid request -> `402`
-- paid retry -> `200`
-- second identical paid request -> `cache_hit: true`
-- invalid member paid request -> typed `404`
+- unpaid request returns `402`;
+- paid retry returns `200`;
+- repeat paid request returns a cached response;
+- invalid member requests return a typed error.
 
-Use `X402_CLIENT_PRIVATE_KEY` for a funded Base Sepolia test wallet. Do not commit private keys.
+## Security and Compliance Notes
 
-## Security notes
-
-- `.env.local` is gitignored and must remain local.
-- The FMP API key should live only in local/Vercel environment variables.
-- The FMP key previously pasted in chat should be rotated before treating V1 as more than a private portfolio demo.
-- This project is not investment advice. Data is public U.S. Senate disclosure data via FMP.
+- Real secrets belong only in `.env.local` and Vercel environment variables.
+- `.env.example` contains placeholders only.
+- The API returns public disclosure data, not investment advice.
+- V1 is a testnet portfolio demo, not a broker, adviser, exchange, or production financial data service.

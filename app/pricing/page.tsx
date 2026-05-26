@@ -67,7 +67,10 @@ export default function PricingPage() {
             {[
               ["Not investment advice", "Responses are normalized disclosure data, not recommendations."],
               ["Public source data", "Underlying records come from public U.S. Senate disclosures via FMP."],
-              ["Independent work", "Capitol Gains is independent and not affiliated with filedge."],
+              [
+                "Independent work",
+                "Capitol Gains is independent and not affiliated with FMP, the U.S. Senate, or any brokerage.",
+              ],
             ].map(([title, body]) => (
               <article className="rounded-[2rem] border border-border bg-surface p-7" key={title}>
                 <h2 className="text-lg font-black text-foreground">{title}</h2>

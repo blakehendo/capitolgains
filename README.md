@@ -4,7 +4,7 @@
 
 ![CI](https://github.com/blakehendo/capitolgains/actions/workflows/ci.yml/badge.svg)
 
-Capitol Gains is a portfolio V1 of a paid congressional trade data API. It turns public U.S. Senate trade disclosures into a clean JSON endpoint, with x402 handling per-request payment and Supabase serving a cache-backed API contract.
+Capitol Gains is a x402 congressional trade data API. It turns public U.S. Senate trade disclosures into a clean JSON endpoint, with x402 handling per-request payment and Supabase serving a cache-backed API contract.
 
 The product goal is deliberately small: prove that an AI agent or developer can discover a paid data resource, satisfy an HTTP 402 payment requirement, and receive a stable response without account setup, subscriptions, or API keys.
 

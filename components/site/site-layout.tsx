@@ -56,7 +56,7 @@ export function SiteLayout({ children }: { children: ReactNode }) {
             <Wordmark />
             <p className="mt-5 max-w-md text-sm leading-7 text-muted">
               Capitol Gains is an independent project and is not affiliated with
-              filedge, FMP, the U.S. Senate, or any government office.
+              FMP, the U.S. Senate, or any government office.
             </p>
           </div>
           <div className="grid gap-6 text-sm leading-7 text-muted sm:grid-cols-2">
@@ -67,7 +67,7 @@ export function SiteLayout({ children }: { children: ReactNode }) {
             </p>
             <p>
               Not investment advice. V1 runs on Base Sepolia testnet, supports two
-              exact-match senators, and is intended as an x402 API demonstration.
+              senators, and is intended as an x402 API demonstration.
             </p>
           </div>
         </div>

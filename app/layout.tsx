@@ -7,7 +7,7 @@ export const metadata: Metadata = {
     template: "%s | Capitol Gains",
   },
   description:
-    "Congressional trade data served as an x402-paid JSON API on Base Sepolia.",
+    "Normalized U.S. Senate trade disclosures served as a clean JSON API for agents and developers.",
 };
 
 export default function RootLayout({

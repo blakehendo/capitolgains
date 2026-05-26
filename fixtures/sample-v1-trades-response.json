@@ -1,0 +1,56 @@
+{
+  "member": {
+    "id": "7bb1c798-afe2-4ba4-bdff-cb7cf1d8bbf6",
+    "normalized_name": "john fetterman",
+    "display_name": "John Fetterman",
+    "first_name": "John",
+    "last_name": "Fetterman",
+    "chamber": "senate",
+    "office": "John Fetterman",
+    "party": "D",
+    "state": "PA",
+    "bioguide_id": "F000479"
+  },
+  "trades": [
+    {
+      "id": "b127c34f-3a6d-4419-a9d9-3f47e1c8edbf",
+      "member_id": "7bb1c798-afe2-4ba4-bdff-cb7cf1d8bbf6",
+      "symbol": "BXSL",
+      "transaction_date": "2026-04-13",
+      "disclosure_date": "2026-05-06",
+      "owner": "",
+      "asset_description": "BLACKSTONE SECURED LENDING F",
+      "asset_type": "Corporate Bond",
+      "transaction_type": "Sale",
+      "amount_raw": "$1,001 - $15,000",
+      "amount_range_low": 1001,
+      "amount_range_high": 15000,
+      "comment": null,
+      "source_link": "https://efdsearch.senate.gov/search/view/ptr/f34c4d7a-29ba-48fb-beea-d94c1368cc99/",
+      "fetched_at": "2026-05-26T15:45:13.448Z"
+    },
+    {
+      "id": "725aab07-37d2-4f98-a407-40d965f44711",
+      "member_id": "7bb1c798-afe2-4ba4-bdff-cb7cf1d8bbf6",
+      "symbol": "ATH",
+      "transaction_date": "2026-04-10",
+      "disclosure_date": "2026-05-06",
+      "owner": "",
+      "asset_description": "Athene Holding Ltd",
+      "asset_type": "Corporate Bond",
+      "transaction_type": "Purchase",
+      "amount_raw": "$1,001 - $15,000",
+      "amount_range_low": 1001,
+      "amount_range_high": 15000,
+      "comment": null,
+      "source_link": "https://efdsearch.senate.gov/search/view/ptr/f34c4d7a-29ba-48fb-beea-d94c1368cc99/",
+      "fetched_at": "2026-05-26T15:45:13.448Z"
+    }
+  ],
+  "metadata": {
+    "count": 2,
+    "cache_hit": true,
+    "as_of": "2026-05-26T15:45:14.471Z",
+    "fetched_at": "2026-05-26T15:45:14.471Z"
+  }
+}

@@ -2,8 +2,12 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "x402 Congressional Trades",
-  description: "Next.js app hosting the x402 marketing site and versioned trade-data API.",
+  title: {
+    default: "Capitol Gains",
+    template: "%s | Capitol Gains",
+  },
+  description:
+    "Congressional trade data served as an x402-paid JSON API on Base Sepolia.",
 };
 
 export default function RootLayout({

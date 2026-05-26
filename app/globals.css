@@ -1,26 +1,81 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f7f4ec;
+  --foreground: #101713;
+  --surface: #fffdf7;
+  --surface-muted: #ece7dc;
+  --border: #d8d0c1;
+  --muted: #5c665f;
+  --accent: #00c46a;
+  --accent-ink: #062615;
+  --ink: #101713;
+  --charcoal: #18231d;
+  --paper-grid: rgba(16, 23, 19, 0.08);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: "IBM Plex Sans", "Segoe UI", sans-serif;
+  --color-surface: var(--surface);
+  --color-surface-muted: var(--surface-muted);
+  --color-border: var(--border);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-ink: var(--ink);
+  --color-charcoal: var(--charcoal);
+  --font-sans: "Satoshi", "Aptos", "IBM Plex Sans", "Segoe UI", sans-serif;
   --font-mono: "IBM Plex Mono", "SFMono-Regular", monospace;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #09110d;
+    --foreground: #f4f0e7;
+    --surface: #101b15;
+    --surface-muted: #18251e;
+    --border: #314036;
+    --muted: #a8b3ac;
+    --accent: #28e58b;
+    --accent-ink: #062615;
+    --ink: #f4f0e7;
+    --charcoal: #dbe5dd;
+    --paper-grid: rgba(244, 240, 231, 0.08);
   }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans);
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+.cg-grid {
+  background-image:
+    linear-gradient(var(--paper-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--paper-grid) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+.cg-focus {
+  outline: 2px solid transparent;
+  outline-offset: 3px;
+}
+
+.cg-focus:focus-visible {
+  outline-color: var(--accent);
 }

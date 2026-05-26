@@ -1,69 +1,127 @@
+import { Button } from "@/components/site/button";
+import { CodeBlock } from "@/components/site/code-block";
+import { Section } from "@/components/site/section";
+import { SiteLayout } from "@/components/site/site-layout";
+import { V1_TRADE_MEMBERS, V1_TRADES_PRICE } from "@/lib/trades/contracts";
+
+const exampleRequest = `GET https://capitolgains.xyz/v1/trades?member=John%20Fetterman
+
+HTTP/2 402 Payment Required
+Payment: USDC on Base Sepolia
+
+# Client pays ${V1_TRADES_PRICE}, retries, receives JSON`;
+
+const steps = [
+  {
+    label: "01",
+    title: "Request the trade feed",
+    body: "An agent asks for one exact-match senator and optional date bounds. No API keys, no account setup.",
+  },
+  {
+    label: "02",
+    title: "Receive a 402",
+    body: "The x402 proxy replies with payment requirements: USDC, Base Sepolia, and the Capitol Gains receiving address.",
+  },
+  {
+    label: "03",
+    title: "Pay, retry, get JSON",
+    body: "After settlement, the same request returns normalized congressional trade rows from the warmed cache.",
+  },
+];
+
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col bg-[radial-gradient(circle_at_top,#e6f3ff_0%,#f7f9fc_42%,#ffffff_100%)]">
-      <section className="mx-auto flex w-full max-w-6xl flex-1 flex-col justify-center gap-12 px-6 py-20 sm:px-10 lg:flex-row lg:items-center lg:gap-16 lg:px-12">
-        <div className="max-w-2xl space-y-6">
-          <p className="inline-flex rounded-full border border-sky-200 bg-white/80 px-3 py-1 text-sm font-medium tracking-[0.2em] text-sky-800 uppercase shadow-sm">
-            x402 server scaffold
-          </p>
-          <div className="space-y-4">
-            <h1 className="max-w-xl text-5xl font-semibold tracking-tight text-slate-950 sm:text-6xl">
-              Congressional trade data, packaged behind a clean API.
-            </h1>
-            <p className="max-w-xl text-lg leading-8 text-slate-600">
-              This Next.js 16 app hosts both the public marketing surface and the
-              versioned API that will return congressional trade disclosures.
-              Today it ships with the deployment skeleton, environment contract,
-              and health endpoint every later ticket depends on.
-            </p>
+    <SiteLayout>
+      <main>
+        <section className="cg-grid overflow-hidden px-5 py-20 sm:px-8 sm:py-28">
+          <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
+            <div>
+              <p className="mb-5 inline-flex rounded-full border border-border bg-surface px-4 py-2 text-xs font-bold uppercase tracking-[0.22em] text-muted">
+                Base Sepolia x402 API
+              </p>
+              <h1 className="max-w-4xl text-5xl font-black tracking-[-0.07em] text-foreground sm:text-7xl lg:text-8xl">
+                Congressional trade data, agent-payable per call.
+              </h1>
+              <p className="mt-7 max-w-2xl text-lg leading-8 text-muted sm:text-xl">
+                Capitol Gains serves normalized U.S. Senate trade disclosures as a
+                simple paid JSON endpoint. Agents request data, satisfy x402, and
+                receive cache-backed responses without subscriptions or API keys.
+              </p>
+              <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+                <Button href="/docs">Read the API docs</Button>
+                <Button href="/pricing" variant="secondary">
+                  See pricing
+                </Button>
+              </div>
+              <p className="mt-6 max-w-2xl text-sm leading-7 text-muted">
+                V1 covers {V1_TRADE_MEMBERS.join(" and ")} on Base Sepolia testnet.
+                Data is sourced from FMP and public U.S. Senate disclosures. Not
+                investment advice.
+              </p>
+            </div>
+            <div className="relative">
+              <div className="absolute -inset-8 rounded-full bg-accent/20 blur-3xl" />
+              <div className="relative rounded-[2rem] border border-border bg-surface p-4 shadow-[0_28px_90px_rgba(16,23,19,0.18)]">
+                <CodeBlock code={exampleRequest} label="x402 round trip" />
+                <div className="mt-4 grid grid-cols-3 gap-3 text-center">
+                  {[
+                    ["Price", V1_TRADES_PRICE],
+                    ["Network", "Base Sepolia"],
+                    ["Format", "JSON"],
+                  ].map(([label, value]) => (
+                    <div className="rounded-2xl border border-border bg-background p-4" key={label}>
+                      <p className="text-xs font-bold uppercase tracking-[0.16em] text-muted">
+                        {label}
+                      </p>
+                      <p className="mt-2 text-sm font-black text-foreground">{value}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
-          <div className="flex flex-col gap-3 sm:flex-row">
-            <a
-              className="inline-flex items-center justify-center rounded-full bg-slate-950 px-5 py-3 text-sm font-medium text-white transition hover:bg-slate-800"
-              href="/api/health"
-            >
-              Check `/api/health`
-            </a>
-            <a
-              className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-5 py-3 text-sm font-medium text-slate-700 transition hover:border-slate-950 hover:text-slate-950"
-              href="https://vercel.com/new"
-              target="_blank"
-              rel="noreferrer"
-            >
-              Connect to Vercel
-            </a>
-          </div>
-        </div>
+        </section>
 
-        <div className="grid w-full max-w-2xl gap-4 sm:grid-cols-2">
-          {[
-            {
-              title: "Marketing site",
-              body: "App Router pages live alongside the API so product, docs, and launch messaging ship from one codebase.",
-            },
-            {
-              title: "Versioned API",
-              body: "Trade data endpoints will be mounted under /v1/*, starting with a simple health route to validate deployment.",
-            },
-            {
-              title: "Supabase cache",
-              body: "Supabase will hold normalized trade records and response-friendly query tables to reduce upstream latency.",
-            },
-            {
-              title: "Lambda upstream",
-              body: "A Lambda worker can fetch and transform disclosures upstream, while this app focuses on delivery and presentation.",
-            },
-          ].map((item) => (
-            <article
-              key={item.title}
-              className="rounded-3xl border border-slate-200 bg-white/80 p-6 shadow-[0_20px_60px_rgba(15,23,42,0.08)] backdrop-blur"
-            >
-              <h2 className="text-lg font-semibold text-slate-950">{item.title}</h2>
-              <p className="mt-3 text-sm leading-7 text-slate-600">{item.body}</p>
-            </article>
-          ))}
-        </div>
-      </section>
-    </main>
+        <Section
+          description="The flow mirrors the shape agents already understand: ask for a resource, receive payment requirements, settle, and parse a stable JSON contract."
+          eyebrow="How it works"
+          title="A paid API call in three moving parts."
+        >
+          <div className="grid gap-4 md:grid-cols-3">
+            {steps.map((step) => (
+              <article
+                className="rounded-[2rem] border border-border bg-surface p-7 shadow-sm"
+                key={step.label}
+              >
+                <p className="text-sm font-black text-accent">{step.label}</p>
+                <h3 className="mt-8 text-2xl font-bold tracking-[-0.03em] text-foreground">
+                  {step.title}
+                </h3>
+                <p className="mt-4 text-sm leading-7 text-muted">{step.body}</p>
+              </article>
+            ))}
+          </div>
+        </Section>
+
+        <Section
+          description="Capitol Gains is intentionally narrow for V1: a real payment rail, a real normalized cache, and a clearly stated testnet scope."
+          eyebrow="Trust and scope"
+          title="Small surface area, explicit assumptions."
+        >
+          <div className="grid gap-4 lg:grid-cols-[1fr_1fr_1fr]">
+            {[
+              ["Source trail", "FMP plus public U.S. Senate disclosure records."],
+              ["Payment rail", "x402 exact payments in USDC on Base Sepolia."],
+              ["V1 honesty", `${V1_TRADE_MEMBERS.join(" and ")} only; no fuzzy names.`],
+            ].map(([title, body]) => (
+              <div className="rounded-[2rem] border border-border bg-surface p-7" key={title}>
+                <h3 className="text-lg font-black text-foreground">{title}</h3>
+                <p className="mt-3 text-sm leading-7 text-muted">{body}</p>
+              </div>
+            ))}
+          </div>
+        </Section>
+      </main>
+    </SiteLayout>
   );
 }

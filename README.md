@@ -10,7 +10,7 @@ The product goal is deliberately small: prove that an AI agent or developer can 
 
 ## Why I Built This
 
-I built Capitol Gains to get hands-on with x402, modern AI-assisted coding workflows, and the shape of agent-payable APIs. Senate trades are public record, but the useful signal is scattered across disclosure portals and inconsistent formats. This project packages that data into a narrow, working vertical slice: one paid endpoint, a normalized cache, machine-readable discovery, and a deployed product surface.
+I built Capitol Gains to get hands-on with x402, while using Claude and Codex to plan, build, and implement the entire project. Senate trades are public record, but the useful signal is scattered across disclosure portals and inconsistent formats. This project packages that data into a narrow, working vertical slice: one paid endpoint, a normalized cache, machine-readable discovery, and a deployed product surface.
 
 ## Demo
 

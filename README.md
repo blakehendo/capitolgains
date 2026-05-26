@@ -168,10 +168,27 @@ The client verifies the core paid API loop:
 
 ## Future Work
 
-- **Raw disclosure access:** Add a raw-data lane that preserves original disclosure payloads alongside normalized rows so power users can audit transformations.
-- **Extraction and normalization:** Build a first-party extraction pipeline for Senate disclosure sources instead of relying only on FMP, then use that pipeline to expand coverage beyond the two-senator V1 scope.
-- **Broader coverage:** Add more senators once ingestion quality, dedupe behavior, and freshness guarantees are reliable across a larger dataset.
-- **Mainnet payments:** Move from Base Sepolia to mainnet only after the data rights, error handling, and operational monitoring are appropriate for a real paid API.
+### Raw Document Ingestion
+
+V1 uses FMP as the upstream source for Senate trade rows. The next version should reduce that dependency by going closer to the official disclosure source: Senate Periodic Transaction Reports made available through the public financial disclosure system and the Senate Office of Public Records process.
+
+The feature is not "raw data access" for users. It is a first-party ingestion pipeline that starts from the public filings themselves, then extracts and normalizes the transaction data into the same Supabase-backed shape the API serves today.
+
+### How This Feature Works
+
+1. **Discover filings:** Track public Senate financial disclosure/PTR search results and collect filing metadata such as filer, report type, filing date, and document URL.
+2. **Fetch source documents:** Download the official PTR document for each filing, preserving the source URL and filing metadata for auditability.
+3. **Extract transactions:** Parse the filing document into transaction candidates. For PDF-based filings, this likely means table extraction plus fallback OCR/layout handling for inconsistent rows.
+4. **Normalize fields:** Convert extracted values into the Capitol Gains schema: member, asset description, ticker when available, transaction type, transaction date, disclosure date, owner, amount bucket, parsed amount range, source link, and fetch timestamp.
+5. **Validate and dedupe:** Run field-level validation and dedupe against the existing transaction key so refetches update records without creating duplicates.
+6. **Serve through the same API contract:** Once normalized rows land in Supabase, `/v1/trades` can serve broader coverage without changing the public response shape.
+
+This unlocks broader senator coverage because the bottleneck moves from "which members FMP exposes in the current endpoint and plan" to "which official filings can be discovered, extracted, validated, and normalized reliably." Once that pipeline is trustworthy, Capitol Gains can expand member coverage while keeping the same x402 payment flow and JSON contract.
+
+### Later Expansion
+
+- **Broader coverage:** Add more senators once ingestion quality, dedupe behavior, and freshness guarantees are reliable across a larger official-filing dataset.
+- **Mainnet payments:** Move from Base Sepolia to mainnet only after data rights, operational monitoring, and failure handling are appropriate for a real paid API.
 
 ## Security and Compliance Notes
 

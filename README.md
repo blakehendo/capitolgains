@@ -166,6 +166,13 @@ The client verifies the core paid API loop:
 - repeat paid request returns a cached response;
 - invalid member requests return a typed error.
 
+## Future Work
+
+- **Raw disclosure access:** Add a raw-data lane that preserves original disclosure payloads alongside normalized rows so power users can audit transformations.
+- **Extraction and normalization:** Build a first-party extraction pipeline for Senate disclosure sources instead of relying only on FMP, then use that pipeline to expand coverage beyond the two-senator V1 scope.
+- **Broader coverage:** Add more senators once ingestion quality, dedupe behavior, and freshness guarantees are reliable across a larger dataset.
+- **Mainnet payments:** Move from Base Sepolia to mainnet only after the data rights, error handling, and operational monitoring are appropriate for a real paid API.
+
 ## Security and Compliance Notes
 
 - Real secrets belong only in `.env.local` and Vercel environment variables.

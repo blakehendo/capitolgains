@@ -4,9 +4,39 @@
 
 ![CI](https://github.com/blakehendo/capitolgains/actions/workflows/ci.yml/badge.svg)
 
-Capitol Gains is a portfolio V1 of an agent-payable congressional trade data API. It packages public U.S. Senate trade disclosures behind a narrow paid JSON endpoint, using x402 for per-call payment, Supabase for cache-backed reads, and Financial Modeling Prep as the upstream data source.
+Capitol Gains is a portfolio V1 of a paid congressional trade data API. It turns public U.S. Senate trade disclosures into a clean JSON endpoint, with x402 handling per-request payment and Supabase serving a cache-backed API contract.
 
-The product goal is deliberately small: prove that an AI agent or developer can discover a paid data resource, satisfy an HTTP 402 payment requirement, and receive a stable API response without account setup, subscriptions, or API keys.
+The product goal is deliberately small: prove that an AI agent or developer can discover a paid data resource, satisfy an HTTP 402 payment requirement, and receive a stable response without account setup, subscriptions, or API keys.
+
+## Why I Built This
+
+I built Capitol Gains to get hands-on with x402, modern AI-assisted coding workflows, and the shape of agent-payable APIs. Senate trades are public record, but the useful signal is scattered across disclosure portals and inconsistent formats. This project packages that data into a narrow, working vertical slice: one paid endpoint, a normalized cache, machine-readable discovery, and a deployed product surface.
+
+## Demo
+
+The live site is at [capitolgains.xyz](https://capitolgains.xyz). The homepage shows a free sample response, and the paid endpoint demonstrates the full `402 -> pay -> 200` loop:
+
+```http
+GET https://capitolgains.xyz/v1/trades?member=John%20Fetterman
+
+HTTP/2 402 Payment Required
+# client pays $0.05 USDC on Base Sepolia, then retries
+
+HTTP/2 200 OK
+{
+  "member": { "display_name": "John Fetterman" },
+  "trades": [
+    {
+      "symbol": "BXSL",
+      "transaction_type": "Sale",
+      "transaction_date": "2026-04-13",
+      "disclosure_date": "2026-05-06",
+      "amount_raw": "$1,001 - $15,000"
+    }
+  ],
+  "metadata": { "cache_hit": true }
+}
+```
 
 ## Product Scope
 
@@ -23,6 +53,18 @@ Supported query parameters:
 - `to` - optional inclusive `YYYY-MM-DD` transaction date upper bound.
 
 The endpoint costs `$0.05` USDC per successful call on Base Sepolia testnet. Requests without payment receive `402 Payment Required`; paid retries receive normalized JSON data from the cache/API layer.
+
+## Product Decisions
+
+- **Cache-aside over live proxy:** The API serves normalized rows from Supabase instead of proxying FMP on every paid request. That keeps the public contract stable, reduces upstream dependency during paid calls, and makes freshness explicit.
+- **x402 over API keys:** The project tests a no-account purchase flow where payment happens at the HTTP layer. That is the core product bet: agents should be able to pay for a resource without onboarding into a SaaS dashboard first.
+- **Two-senator V1 scope:** V1 supports Gary Peters and John Fetterman only. That is a deliberate vertical slice: prove data ingestion, normalization, caching, docs, discovery, payment, and client behavior end to end before broadening coverage.
+- **Typed errors over silent fallbacks:** Invalid members and malformed date filters return explicit JSON errors. Clients should know when a paid request failed because of input shape rather than receiving ambiguous empty data.
+- **Testnet first:** Base Sepolia validates the payment workflow without presenting the project as a production financial data service.
+
+## How This Was Built
+
+This was built with AI coding tools in an intentionally hands-on workflow. I owned the product scope, architecture, tradeoffs, ticket sequencing, review criteria, and launch checklist; AI agents helped implement, test, and iterate against that direction. The result is meant to show practical fluency with the 2026 AI-assisted build stack: scoping a small product, decomposing it into tickets, using tools to move quickly, and still holding the line on correctness, security, and product judgment.
 
 ## Architecture
 
@@ -41,14 +83,6 @@ flowchart LR
 ```
 
 Public marketing, docs, health, and discovery routes are served by the same Next.js app. The x402 proxy only protects `/v1/*`; public pages and discovery files remain free so developers and agents can understand the product before paying.
-
-## Product Decisions
-
-- **Narrow V1 dataset:** two senators instead of a broad but unreliable member search surface. This keeps testing, cache freshness, and response contracts easy to verify.
-- **Payment at the protocol layer:** x402 removes subscription and API-key setup from the buyer flow. The API can be consumed by agents that understand HTTP 402 payment requirements.
-- **Cache-aside data model:** Supabase stores normalized member and transaction rows so the paid endpoint can return a stable contract even though upstream FMP fields may change.
-- **Explicit public contract:** `/docs`, `/.well-known/x402.json`, and `/llms.txt` make the endpoint understandable to both humans and agents.
-- **Testnet launch:** Base Sepolia is used intentionally for a portfolio/demo release. This validates the payment flow without treating the product as a live financial service.
 
 ## Public Routes
 

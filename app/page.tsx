@@ -1,31 +1,36 @@
 import { Button } from "@/components/site/button";
 import { CodeBlock } from "@/components/site/code-block";
+import { SampleResponse } from "@/components/site/sample-response";
 import { Section } from "@/components/site/section";
 import { SiteLayout } from "@/components/site/site-layout";
 import { V1_TRADE_MEMBERS, V1_TRADES_PRICE } from "@/lib/trades/contracts";
 
-const exampleRequest = `GET https://capitolgains.xyz/v1/trades?member=John%20Fetterman
+const exampleResponse = `GET /v1/trades?member=John%20Fetterman
 
-HTTP/2 402 Payment Required
-Payment: USDC on Base Sepolia
-
-# Client pays ${V1_TRADES_PRICE}, retries, receives JSON`;
+HTTP/2 200 OK
+{
+  "symbol": "BXSL",
+  "transaction_type": "Sale",
+  "transaction_date": "2026-04-13",
+  "disclosure_date": "2026-05-06",
+  "amount_raw": "$1,001 - $15,000"
+}`;
 
 const steps = [
   {
     label: "01",
-    title: "Request the trade feed",
-    body: "An agent asks for one exact-match senator and optional date bounds. No API keys, no account setup.",
+    title: "Request the data",
+    body: "Ask for a senator's trade history by name, with optional transaction-date filters.",
   },
   {
     label: "02",
-    title: "Receive a 402",
-    body: "The x402 proxy replies with payment requirements: USDC, Base Sepolia, and the Capitol Gains receiving address.",
+    title: "Pay only for the call",
+    body: "The API returns x402 payment requirements. No account, API key, or subscription is needed.",
   },
   {
     label: "03",
-    title: "Pay, retry, get JSON",
-    body: "After settlement, the same request returns normalized congressional trade rows from the warmed cache.",
+    title: "Parse stable JSON",
+    body: "After payment, the retry returns normalized trade rows from the cache-backed API.",
   },
 ];
 
@@ -37,32 +42,35 @@ export default function Home() {
           <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
             <div>
               <p className="mb-5 inline-flex rounded-full border border-border bg-surface px-4 py-2 text-xs font-bold uppercase tracking-[0.22em] text-muted">
-                Base Sepolia x402 API
+                Senate disclosure data API
               </p>
               <h1 className="max-w-4xl text-5xl font-black tracking-[-0.07em] text-foreground sm:text-7xl lg:text-8xl">
-                Congressional trade data, agent-payable per call.
+                Senate trades, normalized into clean JSON.
               </h1>
               <p className="mt-7 max-w-2xl text-lg leading-8 text-muted sm:text-xl">
-                Capitol Gains serves normalized U.S. Senate trade disclosures as a
-                simple paid JSON endpoint. Agents request data, satisfy x402, and
-                receive cache-backed responses without subscriptions or API keys.
+                Capitol Gains turns public U.S. Senate trade disclosures into a
+                structured API for agents, research tools, and developers who do
+                not want to scrape disclosure portals or parse inconsistent filings.
+              </p>
+              <p className="mt-5 max-w-2xl text-base font-bold leading-7 text-foreground">
+                See what senators traded, when they disclosed it, and the reported
+                amount range in one cache-backed response.
               </p>
               <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-                <Button href="/docs">Read the API docs</Button>
+                <Button href="#sample">View a sample response</Button>
                 <Button href="/pricing" variant="secondary">
                   See pricing
                 </Button>
               </div>
               <p className="mt-6 max-w-2xl text-sm leading-7 text-muted">
-                V1 covers {V1_TRADE_MEMBERS.join(" and ")} on Base Sepolia testnet.
-                Data is sourced from FMP and public U.S. Senate disclosures. Not
-                investment advice.
+                Pay per request in USDC on Base Sepolia. No API keys, no accounts,
+                no subscription. V1 covers {V1_TRADE_MEMBERS.join(" and ")}.
               </p>
             </div>
             <div className="relative">
               <div className="absolute -inset-8 rounded-full bg-accent/20 blur-3xl" />
               <div className="relative rounded-[2rem] border border-border bg-surface p-4 shadow-[0_28px_90px_rgba(16,23,19,0.18)]">
-                <CodeBlock code={exampleRequest} label="x402 round trip" />
+                <CodeBlock code={exampleResponse} label="normalized trade row" language="json" />
                 <div className="mt-4 grid grid-cols-3 gap-3 text-center">
                   {[
                     ["Price", V1_TRADES_PRICE],
@@ -83,9 +91,40 @@ export default function Home() {
         </section>
 
         <Section
-          description="The flow mirrors the shape agents already understand: ask for a resource, receive payment requirements, settle, and parse a stable JSON contract."
+          description="Senate trades are public record, but the useful signal is buried in disclosure portals, inconsistent filings, and provider-specific field names."
+          eyebrow="Problem"
+          title="Public data should not require scraping PDFs."
+        >
+          <div className="grid gap-4 md:grid-cols-3">
+            {[
+              ["For agents", "A machine-readable paid endpoint instead of a login wall or manual export."],
+              ["For builders", "A stable response shape for prototypes, research tools, and portfolio demos."],
+              ["For researchers", "Transaction dates, disclosure dates, tickers, types, and amount ranges in one JSON contract."],
+            ].map(([title, body]) => (
+              <article className="rounded-[2rem] border border-border bg-surface p-7" key={title}>
+                <h2 className="text-xl font-black tracking-[-0.03em] text-foreground">
+                  {title}
+                </h2>
+                <p className="mt-3 text-sm leading-7 text-muted">{body}</p>
+              </article>
+            ))}
+          </div>
+        </Section>
+
+        <Section
+          description="Before setting up a wallet or paying a request, inspect the exact kind of normalized response the API returns."
+          eyebrow="Live proof"
+          title="See the JSON before the paywall."
+        >
+          <div id="sample" className="scroll-mt-24">
+            <SampleResponse />
+          </div>
+        </Section>
+
+        <Section
+          description="The payment rail stays out of the way: request the resource, satisfy the 402, and parse the same endpoint response."
           eyebrow="How it works"
-          title="A paid API call in three moving parts."
+          title="Three steps. No account."
         >
           <div className="grid gap-4 md:grid-cols-3">
             {steps.map((step) => (
@@ -104,15 +143,15 @@ export default function Home() {
         </Section>
 
         <Section
-          description="Capitol Gains is intentionally narrow for V1: a real payment rail, a real normalized cache, and a clearly stated testnet scope."
+          description="V1 is a complete vertical slice: two senators, one endpoint, one payment flow, and one stable response contract."
           eyebrow="Trust and scope"
-          title="Small surface area, explicit assumptions."
+          title="Scoped on purpose."
         >
           <div className="grid gap-4 lg:grid-cols-[1fr_1fr_1fr]">
             {[
-              ["Source trail", "FMP plus public U.S. Senate disclosure records."],
-              ["Payment rail", "x402 exact payments in USDC on Base Sepolia."],
-              ["V1 honesty", `${V1_TRADE_MEMBERS.join(" and ")} only; no fuzzy names.`],
+              ["Source trail", "Public U.S. Senate disclosure records via FMP."],
+              ["Payment rail", "x402 exact payments in USDC on Base Sepolia testnet."],
+              ["Focused V1", `${V1_TRADE_MEMBERS.join(" and ")} only, chosen to prove the full loop end to end.`],
             ].map(([title, body]) => (
               <div className="rounded-[2rem] border border-border bg-surface p-7" key={title}>
                 <h3 className="text-lg font-black text-foreground">{title}</h3>

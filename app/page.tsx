@@ -58,8 +58,8 @@ export default function Home() {
               </p>
               <div className="mt-9 flex flex-col gap-3 sm:flex-row">
                 <Button href="#sample">View a sample response</Button>
-                <Button href="/pricing" variant="secondary">
-                  See pricing
+                <Button href="/docs" variant="secondary">
+                  Read the API docs
                 </Button>
               </div>
               <p className="mt-6 max-w-2xl text-sm leading-7 text-muted">

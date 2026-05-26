@@ -54,7 +54,6 @@ Public marketing, docs, health, and discovery routes are served by the same Next
 
 - `/` - marketing landing page.
 - `/docs` - API reference and sample response.
-- `/pricing` - pay-per-call pricing and disclaimers.
 - `/api/health` - free liveness check.
 - `/.well-known/x402.json` - machine-readable x402 service descriptor.
 - `/llms.txt` - agent-readable usage notes.

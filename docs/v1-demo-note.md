@@ -5,7 +5,7 @@ Capitol Gains V1 is a private portfolio demo for an x402-paid data API.
 Demo path:
 
 1. Open `https://capitolgains.xyz`.
-2. Review the landing page, `/docs`, and `/pricing`.
+2. Review the landing page and `/docs`.
 3. Inspect `https://capitolgains.xyz/.well-known/x402.json` for machine-readable payment discovery.
 4. Inspect `https://capitolgains.xyz/llms.txt` for agent-readable usage notes.
 5. Run the standalone client:

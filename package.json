@@ -11,6 +11,7 @@
     "build": "next build --webpack",
     "start": "next start",
     "smoke:x402": "node --env-file=.env.local scripts/x402-smoke-test.mjs",
+    "x402:trades": "npx tsx --conditions react-server --env-file=.env.local scripts/x402-trades-client.ts",
     "lint": "eslint"
   },
   "dependencies": {

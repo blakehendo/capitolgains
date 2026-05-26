@@ -1,6 +1,10 @@
 export const V1_TRADE_MEMBERS = ["Gary Peters", "John Fetterman"] as const;
 export const V1_TRADES_PRICE = "$0.05";
-export const V1_PING_PRICE = "$0.01";
+export const V1_TRADES_PRICE_USDC_UNITS = "50000";
+export const BASE_SEPOLIA_CHAIN_ID = "eip155:84532";
+export const BASE_SEPOLIA_DISCOVERY_NETWORK = "base-sepolia";
+export const BASE_SEPOLIA_USDC_ADDRESS = "0x036CbD53842c5426634e7929541eC2318f3dCF7e";
+export const X402_MAX_TIMEOUT_SECONDS = 300;
 
 export type V1TradeMemberName = (typeof V1_TRADE_MEMBERS)[number];
 export type V1TradeErrorCode =

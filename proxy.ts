@@ -1,9 +1,8 @@
 import { HTTPFacilitatorClient } from "@x402/core/server";
 import { ExactEvmScheme } from "@x402/evm/exact/server";
 import { paymentProxy, x402ResourceServer } from "@x402/next";
-import { V1_PING_PRICE, V1_TRADES_PRICE } from "@/lib/trades/contracts";
+import { BASE_SEPOLIA_CHAIN_ID, V1_TRADES_PRICE } from "@/lib/trades/contracts";
 
-const BASE_SEPOLIA_NETWORK = "eip155:84532";
 const X402_FACILITATOR_URL = "https://x402.org/facilitator";
 
 const receivingWalletAddress = process.env.BASE_SEPOLIA_RECEIVING_WALLET_ADDRESS;
@@ -17,27 +16,17 @@ const facilitatorClient = new HTTPFacilitatorClient({
 });
 
 export const x402Server = new x402ResourceServer(facilitatorClient).register(
-  BASE_SEPOLIA_NETWORK,
+  BASE_SEPOLIA_CHAIN_ID,
   new ExactEvmScheme(),
 );
 
 export const proxy = paymentProxy(
   {
-    "/v1/ping": {
-      accepts: {
-        scheme: "exact",
-        price: V1_PING_PRICE,
-        network: BASE_SEPOLIA_NETWORK,
-        payTo: receivingWalletAddress,
-      },
-      description: "Capitol Gains paid API ping",
-      mimeType: "application/json",
-    },
     "/v1/trades": {
       accepts: {
         scheme: "exact",
         price: V1_TRADES_PRICE,
-        network: BASE_SEPOLIA_NETWORK,
+        network: BASE_SEPOLIA_CHAIN_ID,
         payTo: receivingWalletAddress,
       },
       description: "Capitol Gains congressional trades API",
